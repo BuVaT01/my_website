@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Technician Panel</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f2f6fb;
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #1366d6;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 14px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 0 30px rgba(19, 102, 214, 0.2);
+    flex-grow: 1;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .nav-button {
+    cursor: pointer;
+    background: #d9e7ff;
+    color: #1366d6;
+    padding: 0.6rem 1.4rem;
+    border-radius: 40px;
+    font-weight: 600;
+    border: 2px solid transparent;
+    user-select: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .nav-button.active,
+  .nav-button:hover {
+    background-color: #1366d6;
+    color: white;
+    border-color: #0e479a;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    color: #1366d6;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    padding: 0.75rem 1rem;
+    border: 1px solid #cfd9f7;
+    font-size: 0.95rem;
+  }
+  th {
+    background: #d9e7ff;
+    color: #0e479a;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f8ff;
+  }
+  /* Forms */
+  form {
+    max-width: 700px;
+    background: #e7f0ff;
+    border-radius: 14px;
+    padding: 1.5rem 1.8rem;
+    box-shadow: inset 0 0 8px #a6bbff;
+    margin-top: 1rem;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea,
+  input[type="text"] {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 1.2rem;
+    border: 1.8px solid #9cb9ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+  }
+  input[type="date"]:focus,
+  input[type="time"]:focus,
+  select:focus,
+  textarea:focus,
+  input[type="text"]:focus {
+    outline: none;
+    border-color: #1366d6;
+    background-color: #dbe6ff;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button {
+    background-color: #1366d6;
+    border: none;
+    border-radius: 14px;
+    padding: 0.75rem 1.6rem;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0e479a;
+  }
+  /* Messages */
+  .message {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+  }
+  .message.success {
+    background-color: #d0e9d6;
+    color: #1f532f;
+  }
+  .message.error {
+    background-color: #f8d7da;
+    color: #7d2124;
+  }
+  /* Logout button */
+  #logout-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    background: #cc2c35;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 22px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 999;
+  }
+  #logout-btn:hover {
+    background-color: #911c21;
+  }
+  /* Spare parts select */
+  select.spare-parts-select {
+    max-height: 120px;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+  <header>Texnik panel</header>
+  <button id="logout-btn" aria-label="Chiqish">Chiqish</button>
+  <main>
+    <nav aria-label="Asosiy navigatsiya">
+      <button class="nav-button active" data-section="work-requests-section" aria-controls="work-requests-section">📝 Mening ish so‘rovlari</button>
+      <button class="nav-button" data-section="work-schedule-section" aria-controls="work-schedule-section">📅 Ish jadvali</button>
+    </nav>
+  
+    <!-- Ish so‘rovlari bo‘limi -->
+    <section id="work-requests-section" class="active" tabindex="0">
+      <h2>Sizga biriktirilgan ish so‘rovlari</h2>
+      <table aria-label="Texnikka biriktirilgan ish so‘rovlari">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Foydalanuvchi emaili</th>
+            <th>Qurilma</th>
+            <th>Muammo</th>
+            <th>Holat</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody id="work-requests-table-body">
+          <!-- Dinamik tarzda to‘ldiriladi -->
+        </tbody>
+      </table>
+    </section>
+  
+    <!-- Ish jadvali va tafsilotlari bo‘limi -->
+    <section id="work-schedule-section" tabindex="0">
+      <h2>Ish jadvali va tafsilotlari</h2>
+      <form id="work-details-form" novalidate>
+        <div class="message" id="work-details-message" role="alert" aria-live="polite"></div>
+  
+        <label for="work-request-select">Ish so‘rovini tanlang</label>
+        <select id="work-request-select" required>
+          <option value="">-- So‘rovni tanlang --</option>
+        </select>
+  
+        <label for="work-start-date">Ish boshlanish sanasi</label>
+        <input type="date" id="work-start-date" required />
+  
+        <label for="work-start-time">Ish boshlanish vaqti</label>
+        <input type="time" id="work-start-time" required />
+  
+        <label for="work-end-date">Ish tugash sanasi</label>
+        <input type="date" id="work-end-date" />
+  
+        <label for="work-end-time">Ish tugash vaqti</label>
+        <input type="time" id="work-end-time" />
+  
+        <label for="spare-parts-used">Ishlatilgan ehtiyot qismlar</label>
+        <select id="spare-parts-used" multiple size="5" class="spare-parts-select" aria-label="Ishlatilgan ehtiyot qismlarni tanlang"></select>
+  
+        <label for="feedback-text">Fikr / yechim tavsifi</label>
+        <textarea id="feedback-text" rows="6" placeholder="Fikr yoki yechim tafsilotlarini yozing..."></textarea>
+  
+        <button type="submit">Ish tafsilotlarini saqlash</button>
+      </form>
+    </section>
+  </main>
+  
+
+<script>
+  (function(){
+    const LOGOUT_BTN = document.getElementById('logout-btn');
+    const navButtons = document.querySelectorAll('.nav-button');
+    const sections = document.querySelectorAll('section');
+
+    // Data keys in localStorage
+    const TECH_USER_KEY = 'technician_logged_in';
+    const WORK_REQUESTS_KEY = 'technician_work_requests';
+    const SPARE_PARTS_KEY = 'spare_parts';
+    const WORK_DETAILS_KEY = 'technician_work_details';
+
+    // Logged in technician email simulation (hardcoded demo)
+    let currentTechnicianEmail = null;
+
+    // Navigation tab switching
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sectionId = btn.dataset.section;
+        sections.forEach(section => {
+          section.id === sectionId ? section.classList.add('active') : section.classList.remove('active');
+        });
+        document.getElementById(sectionId).focus();
+      });
+    });
+
+    // Logout
+    LOGOUT_BTN.addEventListener('click', () => {
+      sessionStorage.removeItem(TECH_USER_KEY);
+      alert('You have been logged out.');
+      location.reload();
+    });
+
+    // Simulate a logged-in technician by sessionStorage or set default
+    function loadTechnician() {
+      let tech = sessionStorage.getItem(TECH_USER_KEY);
+      if(!tech) {
+        // For demo set default technician email
+        tech = 'tech1@example.com';
+        sessionStorage.setItem(TECH_USER_KEY, tech);
+      }
+      currentTechnicianEmail = tech;
+    }
+
+    // Seed sample spare parts if none
+    function seedSpareParts() {
+      const parts = JSON.parse(localStorage.getItem(SPARE_PARTS_KEY));
+      if(!parts || parts.length === 0) {
+        const sampleParts = [
+          { id: 'p1', name: 'Motherboard' },
+          { id: 'p2', name: 'Hard Drive' },
+          { id: 'p3', name: 'RAM Module' },
+          { id: 'p4', name: 'Power Supply' },
+          { id: 'p5', name: 'Screen Panel' }
+        ];
+        localStorage.setItem(SPARE_PARTS_KEY, JSON.stringify(sampleParts));
+      }
+    }
+
+    // Seed sample work requests assigned to technicians if none
+    function seedWorkRequests() {
+      let requests = JSON.parse(localStorage.getItem(WORK_REQUESTS_KEY));
+      if(!requests || requests.length === 0) {
+        requests = [
+          {
+            id: 'WR-101',
+            userEmail: 'user1@example.com',
+            technicianEmail: 'tech1@example.com',
+            device: 'Laptop',
+            issue: "Won't power on",
+            status: "Pending"
+          },
+          {
+            id: 'WR-102',
+            userEmail: 'user2@example.com',
+            technicianEmail: 'tech2@example.com',
+            device: 'Desktop PC',
+            issue: 'Overheating frequently',
+            status: 'In progress'
+          },
+          {
+            id: 'WR-103',
+            userEmail: 'user3@example.com',
+            technicianEmail: 'tech1@example.com',
+            device: 'Tablet',
+            issue: 'Broken screen',
+            status: 'Scheduled'
+          }
+        ];
+        localStorage.setItem(WORK_REQUESTS_KEY, JSON.stringify(requests));
+      }
+    }
+
+    // Load requests for the current technician
+    function loadTechnicianWorkRequests() {
+      const requests = JSON.parse(localStorage.getItem(WORK_REQUESTS_KEY)) || [];
+      const assignedRequests = requests.filter(r => r.technicianEmail === currentTechnicianEmail);
+      const tbody = document.getElementById('work-requests-table-body');
+      tbody.innerHTML = '';
+
+      if(assignedRequests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1rem;">No work requests assigned to you.</td></tr>';
+        return;
+      }
+      assignedRequests.forEach(req => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${req.id}</td>
+          <td>${req.userEmail}</td>
+          <td>${req.device}</td>
+          <td title="${req.issue}">${req.issue.length > 40 ? req.issue.substr(0, 40) + '…' : req.issue}</td>
+          <td>${req.status}</td>
+          <td><button class="edit-work-btn" data-id="${req.id}" aria-label="Edit work request ${req.id} details">Edit</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      attachEditButtons();
+    }
+
+    // Attach Edit buttons event
+    function attachEditButtons() {
+      document.querySelectorAll('.edit-work-btn').forEach(btn => {
+        btn.onclick = () => {
+          const reqId = btn.dataset.id;
+          openWorkDetailsForm(reqId);
+          // Switch to work schedule tab
+          navButtons.forEach(nb => {
+            if(nb.dataset.section === 'work-schedule-section') nb.click();
+          });
+        };
+      });
+    }
+
+    // Elements for work details form
+    const workRequestSelect = document.getElementById('work-request-select');
+    const workStartDate = document.getElementById('work-start-date');
+    const workStartTime = document.getElementById('work-start-time');
+    const workEndDate = document.getElementById('work-end-date');
+    const workEndTime = document.getElementById('work-end-time');
+    const sparePartsUsedSelect = document.getElementById('spare-parts-used');
+    const feedbackText = document.getElementById('feedback-text');
+    const workDetailsForm = document.getElementById('work-details-form');
+    const workDetailsMessage = document.getElementById('work-details-message');
+
+    // Load spare parts options
+    function loadSparePartsOptions() {
+      const parts = JSON.parse(localStorage.getItem(SPARE_PARTS_KEY)) || [];
+      sparePartsUsedSelect.innerHTML = '';
+      parts.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = p.name;
+        sparePartsUsedSelect.appendChild(option);
+      });
+    }
+
+    // Load assigned requests into the dropdown on the schedule page
+    function loadWorkRequestOptions() {
+      const requests = JSON.parse(localStorage.getItem(WORK_REQUESTS_KEY)) || [];
+      const assignedRequests = requests.filter(r => r.technicianEmail === currentTechnicianEmail);
+      workRequestSelect.innerHTML = '<option value="">-- Select a Request --</option>';
+      assignedRequests.forEach(req => {
+        const option = document.createElement('option');
+        option.value = req.id;
+        option.textContent = `${req.id} - ${req.device} (${req.status})`;
+        workRequestSelect.appendChild(option);
+      });
+    }
+
+    // Load stored work details or reset form
+    function openWorkDetailsForm(requestId) {
+      clearWorkDetailsMessage();
+      if(!requestId) {
+        workDetailsForm.reset();
+        return;
+      }
+      workRequestSelect.value = requestId;
+      // Load data previously saved
+      const storedDetails = JSON.parse(localStorage.getItem(WORK_DETAILS_KEY)) || {};
+      const detail = storedDetails[requestId];
+      if(detail) {
+        workStartDate.value = detail.workStartDate || '';
+        workStartTime.value = detail.workStartTime || '';
+        workEndDate.value = detail.workEndDate || '';
+        workEndTime.value = detail.workEndTime || '';
+        feedbackText.value = detail.feedback || '';
+        // Set spare parts used (multi-select)
+        Array.from(sparePartsUsedSelect.options).forEach(opt => {
+          opt.selected = detail.sparePartsUsed ? detail.sparePartsUsed.includes(opt.value) : false;
+        });
+      } else {
+        workDetailsForm.reset();
+      }
+    }
+
+    // Handle work request select change - load its data or reset
+    workRequestSelect.addEventListener('change', () => {
+      openWorkDetailsForm(workRequestSelect.value);
+    });
+
+    // Save work details form
+    workDetailsForm.addEventListener('submit', e => {
+      e.preventDefault();
+      clearWorkDetailsMessage();
+
+      const requestId = workRequestSelect.value;
+      if(!requestId) {
+        showWorkDetailsMessage('Please select a work request.', 'error');
+        return;
+      }
+      if(!workStartDate.value || !workStartTime.value) {
+        showWorkDetailsMessage('Start date and time are required.', 'error');
+        return;
+      }
+
+      // Collect spare parts used ids
+      const selectedSpareParts = Array.from(sparePartsUsedSelect.selectedOptions).map(opt => opt.value);
+
+      // Save data in localStorage dictionary keyed by requestId
+      let workDetails = JSON.parse(localStorage.getItem(WORK_DETAILS_KEY)) || {};
+      workDetails[requestId] = {
+        workStartDate: workStartDate.value,
+        workStartTime: workStartTime.value,
+        workEndDate: workEndDate.value,
+        workEndTime: workEndTime.value,
+        sparePartsUsed: selectedSpareParts,
+        feedback: feedbackText.value.trim()
+      };
+
+      localStorage.setItem(WORK_DETAILS_KEY, JSON.stringify(workDetails));
+      showWorkDetailsMessage('Work details saved successfully.', 'success');
+    });
+
+    function showWorkDetailsMessage(msg, type='success') {
+      workDetailsMessage.textContent = msg;
+      workDetailsMessage.className = 'message ' + (type === 'success' ? 'success' : 'error');
+      setTimeout(() => {
+        clearWorkDetailsMessage();
+      }, 4000);
+    }
+    function clearWorkDetailsMessage() {
+      workDetailsMessage.textContent = '';
+      workDetailsMessage.className = 'message';
+    }
+
+    // Initialization
+    function init(){
+      loadTechnician();
+      seedSpareParts();
+      seedWorkRequests();
+      loadTechnicianWorkRequests();
+      loadSparePartsOptions();
+      loadWorkRequestOptions();
+    }
+
+    init();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login & Signup</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .container {
+    background: white;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.3);
+    width: 360px;
+  }
+  h2 {
+    color: #1e90ff;
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.1rem;
+    border: 1.8px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: #1e90ff;
+    background: #f0f8ff;
+  }
+  button {
+    background-color: #1e90ff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0d6efd;
+  }
+  .message {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .message.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  .message.error {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+  .toggle-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #1e90ff;
+    cursor: pointer;
+  }
+  .toggle-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+  <div class="container" id="register-container">
+    <h2>Hisob yaratish</h2>
+    <form id="register-form" novalidate>
+      <label for="reg-name">To‘liq ism</label>
+      <input type="text" id="reg-name" placeholder="Ismingiz va familiyangiz" required />
+      <label for="reg-email">Email</label>
+      <input type="email" id="reg-email" placeholder="siz@example.com" required />
+      <label for="reg-password">Parol</label>
+      <input type="password" id="reg-password" placeholder="Parol yarating" required minlength="6" />
+      <button type="submit">Ro‘yxatdan o‘tish</button>
+    </form>
+    <div class="message" id="register-message"></div>
+    <div class="toggle-link" id="to-login">Hisobingiz bormi? Kirish uchun shu yerni bosing</div>
+  </div>
+  
+  <div class="container" id="login-container" style="display:none;">
+    <h2>Foydalanuvchi kirishi</h2>
+    <form id="login-form" novalidate>
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="siz@example.com" required />
+      <label for="login-password">Parol</label>
+      <input type="password" id="login-password" placeholder="Parolingiz" required />
+      <button type="submit">Kirish</button>
+    </form>
+    <div class="message" id="login-message"></div>
+    <a href="./ucerpanel.html" class="toggle-link" id="to-register">Hisobingiz yo‘qmi? Ro‘yxatdan o‘tish uchun shu yerni bosing</a>
+  </div>
+<script src="signup.js"></script>
+</body>
+</html>
+

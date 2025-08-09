@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Service Management System</title>
+<style>
+  /* Base styles */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f4f7fc;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background: #007bff;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  main {
+    flex: 1;
+    max-width: 1200px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .nav-button {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: #e7f0ff;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .nav-button:hover {
+    background: #007bff;
+    color: white;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    color: #007bff;
+    margin-top: 0;
+  }
+  form {
+    margin-bottom: 1.5rem;
+    background: #f0f4ff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+  .message {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+  }
+  .message.success {
+    background: #d4edda;
+    color: #155724;
+  }
+  .message.error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  /* Calendar styles */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .calendar-day {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    background: #f9f9f9;
+  }
+  .calendar-day:hover {
+    background: #e7f0ff;
+  }
+  /* Spare parts table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  th {
+    background: #007bff;
+    color: white;
+  }
+  tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+</style>
+</head>
+<body>
+  <header>Xizmatlarni boshqarish tizimi</header>
+  <main>
+    <nav>
+      <button class="nav-button active" data-section="login-register-section">Kirish / Ro‘yxatdan o‘tish</button>
+      <button class="nav-button" data-section="user-home-section">Foydalanuvchi sahifasi</button>
+      <button class="nav-button" data-section="work-planning-section">Ishni rejalashtirish</button>
+      <button class="nav-button" data-section="spare-parts-section">Ehtiyot qismlar moduli</button>
+      <button class="nav-button" data-section="analytics-section">Statistika sahifasi</button>
+    </nav>
+  
+    <!-- Kirish / Ro‘yxatdan o‘tish bo‘limi -->
+    <section id="login-register-section" class="active">
+      <h2>Kirish / Ro‘yxatdan o‘tish</h2>
+      <form id="login-form">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" required />
+        <label for="login-password">Parol</label>
+        <input type="password" id="login-password" required />
+        <button type="submit">Kirish</button>
+      </form>
+      <form id="register-form">
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email" required />
+        <label for="register-password">Parol</label>
+        <input type="password" id="register-password" required />
+        <label for="profile-type">Profil turi</label>
+        <select id="profile-type" required>
+          <option value="personal">Jismoniy shaxs</option>
+          <option value="business">Biznes</option>
+        </select>
+        <button type="submit">Ro‘yxatdan o‘tish</button>
+      </form>
+      <div class="message" id="auth-message"></div>
+    </section>
+  
+    <!-- Foydalanuvchi sahifasi bo‘limi -->
+    <section id="user-home-section">
+      <h2>Foydalanuvchi sahifasi</h2>
+      <div id="request-status">
+        <h3>So‘rov holati</h3>
+        <p>Hozircha hech qanday so‘rov yuborilmagan.</p>
+      </div>
+      <form id="service-request-form">
+        <h3>Yangi xizmat so‘rovi yuborish</h3>
+        <label for="request-device">Qurilma</label>
+        <input type="text" id="request-device" required />
+        <label for="request-issue">Muammo tavsifi</label>
+        <textarea id="request-issue" required></textarea>
+        <button type="submit">So‘rov yuborish</button>
+      </form>
+      <div id="quotes-section">
+        <h3>Takliflaringiz</h3>
+        <p>Hozircha hech qanday taklif mavjud emas.</p>
+      </div>
+      <div id="knowledge-base">
+        <h3>Bilimlar bazasi</h3>
+        <p>Muammolarni hal qilish uchun maqolalar va qo‘llanmalarni o‘qing.</p>
+      </div>
+    </section>
+  
+    <!-- Ishni rejalashtirish bo‘limi -->
+    <section id="work-planning-section">
+      <h2>Ishni rejalashtirish</h2>
+      <div class="calendar" id="calendar">
+        <!-- Kalendar kunlari shu yerda yaratiladi -->
+      </div>
+    </section>
+  
+    <!-- Ehtiyot qismlar moduli bo‘limi -->
+    <section id="spare-parts-section">
+      <h2>Ehtiyot qismlar moduli</h2>
+      <form id="spare-parts-form">
+        <label for="part-name">Qism nomi</label>
+        <input type="text" id="part-name" required />
+        <label for="part-quantity">Miqdori</label>
+        <input type="number" id="part-quantity" required min="0" />
+        <label for="part-price">Narxi</label>
+        <input type="number" id="part-price" required min="0" step="0.01" />
+        <button type="submit">Ehtiyot qismni qo‘shish</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Nomi</th>
+            <th>Miqdori</th>
+            <th>Narxi</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody id="spare-parts-table-body">
+          <!-- Ehtiyot qismlar shu yerda ko‘rsatiladi -->
+        </tbody>
+      </table>
+    </section>
+  
+    <!-- Statistika sahifasi bo‘limi -->
+    <section id="analytics-section">
+      <h2>Statistika sahifasi</h2>
+      <p>Statistik va tahliliy ma’lumotlar shu yerda ko‘rsatiladi.</p>
+      <div id="analytics-charts">
+        <h3>Muammo turlari bo‘yicha statistika</h3>
+        <p>Diagramma shu yerda yaratiladi.</p>
+        <h3>Ish bajarilish vaqtlari</h3>
+        <p>Diagramma shu yerda yaratiladi.</p>
+      </div>
+    </section>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>

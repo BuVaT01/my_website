@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Individual User Panel</title>
+<style>
+  /* Base and Resets */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; background: #f9fbff; color: #222;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    background-color: #3366ff;
+    color: white;
+    padding: 1.2rem 2rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  main {
+    flex-grow: 1;
+    max-width: 900px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(51,102,255,0.15);
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.8rem;
+  }
+  .nav-button {
+    cursor: pointer;
+    background: #e4ecff;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    color: #3366ff;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    user-select: none;
+  }
+  .nav-button.active,
+  .nav-button:hover {
+    background-color: #3366ff;
+    color: white;
+    border-color: #254eda;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    color: #3366ff;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  /* Form styles */
+  form {
+    max-width: 480px;
+    background: #e9f0ff;
+    border-radius: 12px;
+    padding: 1.5rem 1.8rem;
+    box-shadow: inset 0 0 6px #b0c6ff;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1.2rem;
+    border: 2px solid #9ab8ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #3366ff;
+    background-color: #dce7ff;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  button {
+    background-color: #3366ff;
+    border: none;
+    padding: 0.75rem 1.4rem;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #254eda;
+  }
+  /* Messages */
+  .message {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+  }
+  .message.success {
+    background-color: #d0eed8;
+    color: #256029;
+  }
+  .message.error {
+    background-color: #fddede;
+    color: #991818;
+  }
+  /* Knowledge Base styles */
+  .kb-articles {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1.5px solid #3366ff;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    background: #f0f4ff;
+  }
+  .article {
+    margin-bottom: 1.2rem;
+  }
+  .article h4 {
+    margin: 0 0 0.3rem 0;
+    color: #254eda;
+  }
+  .article p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  /* Logout button */
+  #logout-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    background: #dc3545;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 999;
+  }
+  #logout-btn:hover {
+    background-color: #a7212a;
+  }
+</style>
+</head>
+<body>
+  <header>Jismoniy foydalanuvchi paneli</header>
+  <button id="logout-btn" aria-label="Chiqish">Chiqish</button>
+  <main>
+    <nav aria-label="Asosiy navigatsiya">
+      <button class="nav-button active" data-section="profile-section" aria-controls="profile-section">👤 Profil</button>
+      <button class="nav-button" data-section="submit-request-section" aria-controls="submit-request-section">🛠 Ta’mirlash so‘rovi yuborish</button>
+      <button class="nav-button" data-section="view-quotes-section" aria-controls="view-quotes-section">💰 Takliflarni ko‘rish</button>
+      <button class="nav-button" data-section="knowledge-base-section" aria-controls="knowledge-base-section">📚 Bilimlar bazasi</button>
+    </nav>
+  
+    <!-- Profil bo‘limi -->
+    <section id="profile-section" class="active" tabindex="0">
+      <h2>Profilingizni boshqaring</h2>
+      <form id="profile-form" novalidate>
+        <div class="message" id="profile-message" role="alert" aria-live="polite"></div>
+        <label for="profile-name">To‘liq ism</label>
+        <input type="text" id="profile-name" required />
+  
+        <label for="profile-email">Email</label>
+        <input type="email" id="profile-email" disabled />
+  
+        <label for="profile-password">Yangi parol (joriy parolni saqlash uchun bo‘sh qoldiring)</label>
+        <input type="password" id="profile-password" placeholder="Yangi parol kiriting" minlength="6" />
+  
+        <button type="submit">Profilni saqlash</button>
+      </form>
+    </section>
+  
+    <!-- Ta’mirlash so‘rovi yuborish bo‘limi -->
+    <section id="submit-request-section" tabindex="0">
+      <h2>Kompyuterni ta’mirlash uchun so‘rov yuborish</h2>
+      <form id="repair-request-form" novalidate>
+        <div class="message" id="repair-message" role="alert" aria-live="polite"></div>
+        <label for="device-type">Qurilma turi</label>
+        <input type="text" id="device-type" placeholder="Masalan, noutbuk, shaxsiy kompyuter" required />
+  
+        <label for="issue-description">Muammo tavsifi</label>
+        <textarea id="issue-description" placeholder="Muammoni ta’riflang" required></textarea>
+  
+        <button type="submit">So‘rov yuborish</button>
+      </form>
+    </section>
+  
+    <!-- Takliflarni ko‘rish bo‘limi -->
+    <section id="view-quotes-section" tabindex="0">
+      <h2>Sizning takliflaringiz</h2>
+      <div id="quotes-container">
+        <p>Hozircha hech qanday taklif mavjud emas.</p>
+      </div>
+    </section>
+  
+    <!-- Bilimlar bazasi bo‘limi -->
+    <section id="knowledge-base-section" tabindex="0">
+      <h2>Bilimlar bazasi</h2>
+  
+      <h3>Diagnostika maqolalari</h3>
+      <div class="kb-articles" id="diagnostic-articles" tabindex="0" aria-label="Diagnostika maqolalari">
+        <!-- JS orqali maqolalar qo‘shiladi -->
+      </div>
+  
+      <h3>Muammolarni bartaraf etish qo‘llanmalari</h3>
+      <div class="kb-articles" id="troubleshooting-guides" tabindex="0" aria-label="Muammolarni bartaraf etish qo‘llanmalari">
+        <!-- JS orqali qo‘llanmalar qo‘shiladi -->
+      </div>
+    </section>
+  </main>
+  
+<script>
+  (function(){
+    // Data keys for localStorage (simulate a "logged-in" user)
+    const USER_KEY = "individual_user_data";
+    const REQUESTS_KEY = "individual_repair_requests";
+    const QUOTES_KEY = "individual_quotes";
+
+    // Navigation buttons and sections
+    const navButtons = document.querySelectorAll('.nav-button');
+    const sections = document.querySelectorAll('section');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sectionId = btn.dataset.section;
+        sections.forEach(sec => {
+          sec.id === sectionId ? sec.classList.add('active') : sec.classList.remove('active');
+        });
+        // Focus the active section for accessibility
+        const activeSection = document.getElementById(sectionId);
+        activeSection.focus();
+      });
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem(USER_KEY);
+      alert('You have been logged out.');
+      location.reload();
+    });
+
+    // Initial mock login simulation
+    let currentUser = null;
+    function loadUser() {
+      // Check if user data is in session, else try localStorage
+      let user = sessionStorage.getItem(USER_KEY);
+      if(user) {
+        currentUser = JSON.parse(user);
+      } else {
+        // For demo, create a mock user if not existing
+        let localUser = localStorage.getItem(USER_KEY);
+        if(!localUser) {
+          const demoUser = {name: "John Doe", email: "john@example.com", password: "password123"};
+          localStorage.setItem(USER_KEY, JSON.stringify(demoUser));
+          localUser = JSON.stringify(demoUser);
+        }
+        currentUser = JSON.parse(localUser);
+        sessionStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+      }
+    }
+
+    loadUser();
+
+    // Populate profile form with user data
+    const profileName = document.getElementById('profile-name');
+    const profileEmail = document.getElementById('profile-email');
+    const profilePassword = document.getElementById('profile-password');
+    const profileMessage = document.getElementById('profile-message');
+
+    function populateProfile() {
+      profileName.value = currentUser.name;
+      profileEmail.value = currentUser.email;
+      profilePassword.value = "";
+    }
+    populateProfile();
+
+    // Profile form submit
+    document.getElementById('profile-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newName = profileName.value.trim();
+      const newPassword = profilePassword.value;
+
+      if(!newName) {
+        showProfileMessage("Name cannot be empty.", "error");
+        return;
+      }
+      // Update user data
+      currentUser.name = newName;
+      if(newPassword.length > 0 && newPassword.length < 6){
+        showProfileMessage("Password must be at least 6 characters.", "error");
+        return;
+      }
+      if(newPassword.length >= 6) {
+        currentUser.password = newPassword;
+      }
+      // Store updated info to localStorage and session
+      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+      sessionStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+      showProfileMessage("Profile updated successfully.", "success");
+      profilePassword.value = "";
+    });
+
+    function showProfileMessage(msg, type) {
+      profileMessage.textContent = msg;
+      profileMessage.className = 'message ' + (type === 'success'? 'success':'error');
+      setTimeout(() => {
+        profileMessage.textContent = '';
+        profileMessage.className = 'message';
+      }, 4000);
+    }
+
+    // Submit repair request form
+    const repairForm = document.getElementById('repair-request-form');
+    const repairMessage = document.getElementById('repair-message');
+
+    repairForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const deviceType = document.getElementById('device-type').value.trim();
+      const issueDesc = document.getElementById('issue-description').value.trim();
+
+      if(!deviceType || !issueDesc) {
+        showRepairMessage("Please fill out all fields.", "error");
+        return;
+      }
+
+      // Retrieve existing requests or initialize
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+
+      // Add new request with timestamp and generated id
+      const newRequest = {
+        id: Date.now(),
+        deviceType,
+        issueDesc,
+        status: "Submitted",
+        submittedAt: new Date().toISOString()
+      };
+      requests.push(newRequest);
+      localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+      showRepairMessage("Repair request submitted successfully.", "success");
+      repairForm.reset();
+      loadQuotes(); // Reload quotes as requests may generate quotes in real situations
+    });
+
+    function showRepairMessage(msg, type) {
+      repairMessage.textContent = msg;
+      repairMessage.className = 'message ' + (type === 'success'? 'success':'error');
+      setTimeout(() => {
+        repairMessage.textContent = '';
+        repairMessage.className = 'message';
+      }, 4000);
+    }
+
+    // View quotes section - display a list of quotes stored for this user
+    // For demo, we generate fake quotes based on repair requests
+    const quotesContainer = document.getElementById('quotes-container');
+
+    function loadQuotes(){
+      // Retrieve repair requests
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+      if(requests.length === 0) {
+        quotesContainer.innerHTML = '<p>No quotes available yet.</p>';
+        return;
+      }
+      // For simplicity, simulate quotes by attaching a price estimate to each request
+      let html = '<table aria-label="User quotes" style="width:100%; border-collapse: collapse;"><thead><tr><th style="border-bottom:1.5px solid #3366ff; padding:0.5rem;">Device</th><th style="border-bottom:1.5px solid #3366ff; padding:0.5rem;">Issue Description</th><th style="border-bottom:1.5px solid #3366ff; padding:0.5rem;">Estimated Quote</th><th style="border-bottom:1.5px solid #3366ff; padding:0.5rem;">Status</th></tr></thead><tbody>';
+      requests.forEach(req => {
+        // Random quote estimate between 50 and 300 USD for demo
+        const estimate = "$" + (50 + Math.floor(Math.random() * 250));
+        html += `<tr>
+          <td style="padding:0.5rem; border-bottom:1px solid #ddd;">${escapeHtml(req.deviceType)}</td>
+          <td style="padding:0.5rem; border-bottom:1px solid #ddd;">${escapeHtml(req.issueDesc)}</td>
+          <td style="padding:0.5rem; border-bottom:1px solid #ddd;">${estimate}</td>
+          <td style="padding:0.5rem; border-bottom:1px solid #ddd;">${escapeHtml(req.status)}</td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      quotesContainer.innerHTML = html;
+    }
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    loadQuotes();
+
+    // Knowledge base data
+    const diagnosticArticles = [
+      {title: "How to Diagnose Slow Computer Performance", content:"Learn steps to identify processes or issues causing slowdowns."},
+      {title: "Identifying Hardware Failures", content:"Check common hardware issue symptoms and diagnosis tips."},
+      {title: "Understanding Software Conflicts", content:"How software conflicts may affect your device and what to do."}
+    ];
+
+    const troubleshootingGuides = [
+      {title: "Fixing Wi-Fi Connectivity Issues", content:"Step-by-step guide to resolve Wi-Fi disconnections and low signal."},
+      {title: "Resolving Blue Screen Errors", content:"Common causes and fixes for Windows Blue Screen of Death (BSOD)."},
+      {title: "Removing Malware Safely", content:"Best practices for detecting and removing malware on your PC."}
+    ];
+
+    function renderKnowledgeBase() {
+      const diagContainer = document.getElementById('diagnostic-articles');
+      const guideContainer = document.getElementById('troubleshooting-guides');
+
+      diagContainer.innerHTML = diagnosticArticles.map(article => `<div class="article" tabindex="0"><h4>${escapeHtml(article.title)}</h4><p>${escapeHtml(article.content)}</p></div>`).join('');
+      guideContainer.innerHTML = troubleshootingGuides.map(guide => `<div class="article" tabindex="0"><h4>${escapeHtml(guide.title)}</h4><p>${escapeHtml(guide.content)}</p></div>`).join('');
+    }
+
+    renderKnowledgeBase();
+
+  })();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Business User Panel</title>
+<style>
+  /* Base Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f7f9ff;
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #204ecf;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 0 28px rgba(32, 78, 207, 0.18);
+    padding: 2rem 2.5rem;
+    flex-grow: 1;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .nav-button {
+    cursor: pointer;
+    background: #dbe4ff;
+    color: #204ecf;
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    border: 2px solid transparent;
+    font-weight: 600;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    user-select: none;
+  }
+  .nav-button.active,
+  .nav-button:hover {
+    background-color: #204ecf;
+    color: white;
+    border-color: #122a85;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    color: #204ecf;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  /* Forms */
+  form {
+    max-width: 650px;
+    background: #e6eaff;
+    border-radius: 12px;
+    padding: 1.4rem 1.8rem;
+    box-shadow: inset 0 0 8px #a8b1ff;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select,
+  input[type="number"] {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 1.2rem;
+    border: 2px solid #a4b3f6;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  textarea:focus,
+  select:focus,
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #204ecf;
+    background-color: #d8ddff;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  button {
+    background-color: #204ecf;
+    border: none;
+    border-radius: 14px;
+    padding: 0.75rem 1.6rem;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #122a85;
+  }
+  /* Messages */
+  .message {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+  }
+  .message.success {
+    background-color: #d6efd6;
+    color: #1d4f1d;
+  }
+  .message.error {
+    background-color: #fce4e4;
+    color: #a21414;
+  }
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    padding: 0.75rem 1rem;
+    border: 1px solid #c4c9e8;
+    font-size: 0.95rem;
+    text-align: left;
+  }
+  th {
+    background-color: #dbe4ff;
+    color: #122a85;
+  }
+  tr:nth-child(even) {
+    background-color: #f6f8ff;
+  }
+  /* Employees list */
+  #employees-list {
+    margin-top: 0.75rem;
+  }
+  #employees-list li {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #203e9f;
+  }
+  /* Priority checkbox */
+  label.priority-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  /* Logout button */
+  #logout-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    background: #c82333;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 22px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 999;
+  }
+  #logout-btn:hover {
+    background-color: #881a23;
+  }
+</style>
+</head>
+<body>
+<header>Business User Panel</header>
+<button id="logout-btn" aria-label="Logout">Logout</button>
+<header>Biznes foydalanuvchi paneli</header>
+<button id="logout-btn" aria-label="Chiqish">Chiqish</button>
+<main>
+  <nav aria-label="Asosiy navigatsiya">
+    <button class="nav-button active" data-section="profile-section" aria-controls="profile-section">🏢 Kompaniya profili</button>
+    <button class="nav-button" data-section="service-request-section" aria-controls="service-request-section">🛠 Yangi xizmat so‘rovi</button>
+    <button class="nav-button" data-section="ongoing-services-section" aria-controls="ongoing-services-section">📋 Jarayondagi xizmatlar</button>
+    <button class="nav-button" data-section="employees-section" aria-controls="employees-section">👥 Xodimlar</button>
+  </nav>
+
+  <!-- Kompaniya profili bo‘limi -->
+  <section id="profile-section" class="active" tabindex="0">
+    <h2>Kompaniya profili</h2>
+    <form id="profile-form" novalidate>
+      <div class="message" id="profile-message" role="alert" aria-live="polite"></div>
+      <label for="company-name">Kompaniya nomi</label>
+      <input type="text" id="company-name" required />
+
+      <label for="company-email">Kompaniya emaili</label>
+      <input type="email" id="company-email" required />
+
+      <label for="company-password">Parol</label>
+      <input type="password" id="company-password" placeholder="Parol kiriting" minlength="6" required />
+
+      <button type="submit">Profilni saqlash</button>
+    </form>
+  </section>
+
+  <!-- Yangi xizmat so‘rovi bo‘limi -->
+  <section id="service-request-section" tabindex="0">
+    <h2>Yangi xizmat so‘rovi</h2>
+    <form id="service-request-form" novalidate>
+      <div class="message" id="request-message" role="alert" aria-live="polite"></div>
+
+      <label for="device-count">Qurilma soni</label>
+      <input type="number" id="device-count" min="1" value="1" required />
+
+      <label for="devices-description">Qurilmalar / muammo tavsifi</label>
+      <textarea id="devices-description" placeholder="Qurilmalar va muammolarni tavsiflang" required></textarea>
+
+      <label class="priority-checkbox">
+        <input type="checkbox" id="priority-service" />
+        Ustuvor (tezkor) xizmatni so‘rash
+      </label>
+
+      <label>
+        Davriy texnik xizmat kerakmi?
+        <select id="maintenance-frequency">
+          <option value="">Yo‘q</option>
+          <option value="Monthly">Oylik</option>
+          <option value="Quarterly">Har chorakda</option>
+          <option value="Biannual">Yarim yillik</option>
+          <option value="Annual">Yillik</option>
+        </select>
+      </label>
+
+      <button type="submit">So‘rov yuborish</button>
+    </form>
+  </section>
+
+  <!-- Jarayondagi xizmatlar bo‘limi -->
+  <section id="ongoing-services-section" tabindex="0">
+    <h2>Jarayondagi xizmatlar</h2>
+    <div id="ongoing-services-container">
+      <p>Hozircha hech qanday xizmat yo‘q.</p>
+    </div>
+  </section>
+
+  <!-- Xodimlar bo‘limi -->
+  <section id="employees-section" tabindex="0">
+    <h2>Xodimlarni boshqarish</h2>
+    <form id="employee-form" novalidate>
+      <div class="message" id="employee-message" role="alert" aria-live="polite"></div>
+
+      <label for="employee-name">Xodim to‘liq ismi</label>
+      <input type="text" id="employee-name" placeholder="To‘liq ism" required />
+
+      <label for="employee-email">Xodim emaili</label>
+      <input type="email" id="employee-email" placeholder="email@namuna.com" required />
+
+      <button type="submit">Xodimni qo‘shish</button>
+    </form>
+    <h3>Xodimlar ro‘yxati</h3>
+    <ul id="employees-list" aria-live="polite" aria-label="Xodimlar ro‘yxati">
+      <!-- Xodimlar shu yerda ko‘rsatiladi -->
+    </ul>
+  </section>
+</main>
+
+
+<script>
+  (function(){
+    // Data keys
+    const COMPANY_KEY = "business_company_profile";
+    const REQUESTS_KEY = "business_service_requests";
+    const EMPLOYEES_KEY = "business_employees";
+
+    // Navigation buttons and sections
+    const navButtons = document.querySelectorAll('.nav-button');
+    const sections = document.querySelectorAll('section');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sectionId = btn.dataset.section;
+        sections.forEach(sec => {
+          sec.id === sectionId ? sec.classList.add('active') : sec.classList.remove('active');
+        });
+        // Focus active section for accessibility
+        const activeSection = document.getElementById(sectionId);
+        activeSection.focus();
+      });
+    });
+
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.clear();
+      alert('You have been logged out.');
+      location.reload();
+    });
+
+    // Load/Save Company Profile
+    const companyNameInput = document.getElementById('company-name');
+    const companyEmailInput = document.getElementById('company-email');
+    const companyPasswordInput = document.getElementById('company-password');
+    const profileMessage = document.getElementById('profile-message');
+
+    function loadCompanyProfile() {
+      let data = sessionStorage.getItem(COMPANY_KEY) || localStorage.getItem(COMPANY_KEY);
+      if(data) {
+        const company = JSON.parse(data);
+        companyNameInput.value = company.name || '';
+        companyEmailInput.value = company.email || '';
+        // password not shown for security
+      }
+    }
+    loadCompanyProfile();
+
+    document.getElementById('profile-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = companyNameInput.value.trim();
+      const email = companyEmailInput.value.trim();
+      const password = companyPasswordInput.value;
+
+      if(!name || !email || !password) {
+        showMessage(profileMessage, "Please fill all fields.", "error");
+        return;
+      }
+      if(password.length < 6) {
+        showMessage(profileMessage, "Password must be at least 6 characters.", "error");
+        return;
+      }
+      const company = {name, email, password};
+      localStorage.setItem(COMPANY_KEY, JSON.stringify(company));
+      sessionStorage.setItem(COMPANY_KEY, JSON.stringify(company));
+      companyPasswordInput.value = '';
+      showMessage(profileMessage, "Profile saved successfully.", "success");
+    });
+
+    // Submit Service Request
+    const deviceCountInput = document.getElementById('device-count');
+    const devicesDescriptionInput = document.getElementById('devices-description');
+    const priorityCheckbox = document.getElementById('priority-service');
+    const maintenanceFrequencySelect = document.getElementById('maintenance-frequency');
+    const requestMessage = document.getElementById('request-message');
+
+    document.getElementById('service-request-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const deviceCount = parseInt(deviceCountInput.value);
+      const description = devicesDescriptionInput.value.trim();
+      const priority = priorityCheckbox.checked;
+      const maintenanceFreq = maintenanceFrequencySelect.value;
+
+      if(!deviceCount || deviceCount < 1) {
+        showMessage(requestMessage, "Please enter valid number of devices.", "error");
+        return;
+      }
+      if(!description) {
+        showMessage(requestMessage, "Please describe devices/issues.", "error");
+        return;
+      }
+
+      // Retrieve existing requests
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+
+      // Add new request
+      const newRequest = {
+        id: Date.now(),
+        deviceCount,
+        description,
+        priorityService: priority,
+        maintenanceFrequency: maintenanceFreq || null,
+        status: 'Submitted',
+        submittedAt: new Date().toISOString()
+      };
+
+      requests.push(newRequest);
+      localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+      showMessage(requestMessage, "Service request submitted successfully.", "success");
+      e.target.reset();
+      loadOngoingServices();
+    });
+
+    // Ongoing services listing
+    const ongoingServicesContainer = document.getElementById('ongoing-services-container');
+
+    function loadOngoingServices() {
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+      if(requests.length === 0) {
+        ongoingServicesContainer.innerHTML = '<p>No ongoing services.</p>';
+        return;
+      }
+      let html = '<table aria-label="Ongoing services"><thead><tr><th>Request ID</th><th>Devices</th><th>Description</th><th>Priority</th><th>Maintenance</th><th>Status</th></tr></thead><tbody>';
+      requests.forEach(req => {
+        html += `<tr>
+          <td>${req.id}</td>
+          <td>${req.deviceCount}</td>
+          <td>${escapeHTML(req.description)}</td>
+          <td>${req.priorityService ? "Yes" : "No"}</td>
+          <td>${req.maintenanceFrequency || '-'}</td>
+          <td>${req.status}</td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      ongoingServicesContainer.innerHTML = html;
+    }
+    loadOngoingServices();
+
+    // Employees management
+    const employeeForm = document.getElementById('employee-form');
+    const employeeNameInput = document.getElementById('employee-name');
+    const employeeEmailInput = document.getElementById('employee-email');
+    const employeesList = document.getElementById('employees-list');
+    const employeeMessage = document.getElementById('employee-message');
+
+    function loadEmployees() {
+      const employees = JSON.parse(localStorage.getItem(EMPLOYEES_KEY)) || [];
+      if(employees.length === 0) {
+        employeesList.innerHTML = '<li>No employees added yet.</li>';
+        return;
+      }
+      employeesList.innerHTML = employees.map(emp => `<li>${escapeHTML(emp.name)} - ${escapeHTML(emp.email)}</li>`).join('');
+    }
+    loadEmployees();
+
+    employeeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = employeeNameInput.value.trim();
+      const email = employeeEmailInput.value.trim().toLowerCase();
+
+      if(!name || !email) {
+        showMessage(employeeMessage, "Please fill in employee name and email.", "error");
+        return;
+      }
+      // Simple email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if(!emailRegex.test(email)) {
+        showMessage(employeeMessage, "Please enter a valid email address.", "error");
+        return;
+      }
+
+      let employees = JSON.parse(localStorage.getItem(EMPLOYEES_KEY)) || [];
+      if(employees.some(emp => emp.email === email)) {
+        showMessage(employeeMessage, "This employee email is already added.", "error");
+        return;
+      }
+      employees.push({name, email});
+      localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(employees));
+      employeeNameInput.value = '';
+      employeeEmailInput.value = '';
+      showMessage(employeeMessage, "Employee added successfully.", "success");
+      loadEmployees();
+    });
+
+    // Utility functions
+    function showMessage(container, message, type = "success") {
+      container.textContent = message;
+      container.className = "message " + (type === "success" ? "success" : "error");
+      setTimeout(() => {
+        container.textContent = "";
+        container.className = "message";
+      }, 4000);
+    }
+
+    function escapeHTML(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+  })();
+</script>
+</body>
+</html>
